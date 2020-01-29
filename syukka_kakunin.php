@@ -8,40 +8,28 @@
 なし
 */
 
-//①セッションを開始する
-
+session_start();
 function getByid($id,$con){
-	/* 
-	 * ②書籍を取得するSQLを作成する実行する。
-	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
-	 * SQLの実行結果を変数に保存する。
-	 */
+	$sql = "select * from books where books.id=$id ";
+		$result = $con->query($sql);
 
-	//③実行した結果から1レコード取得し、returnで値を返す。
+		return $result->fetch_assoc();
+
 }
 
 function updateByid($id,$con,$total){
-	/*
-	 * ④書籍情報の在庫数を更新するSQLを実行する。
-	 * 引数で受け取った$totalの値で在庫数を上書く。
-	 * その際にWHERE句でメソッドの引数に$idに一致する書籍のみ取得する。
-	 */
+	$sql = "UPDATE books SET stock = $total WHERE books.id=$id ";
 }
 
-//⑤SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ⑤の処理を書く */){
-	//⑥SESSIONの「error2」に「ログインしてください」と設定する。
-	//⑦ログイン画面へ遷移する。
+if ($_SESSION["login"] == false){
+	$_SESSION ["error2"] = 'ログインしてください';
+	header ( "Location:login.php" );
 }
 
-//⑧データベースへ接続し、接続情報を変数に保存する
-
-//⑨データベースで使用する文字コードを「UTF8」にする
-
-//⑩書籍数をカウントするための変数を宣言し、値を0で初期化する
-
-//⑪POSTの「books」から値を取得し、変数に設定する。
-foreach(/* ⑪の処理を書く */){
+ $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
+	mysqli_set_charset($con,"UTF8");
+$books1=0;
+foreach($_POST["books"] as $g){
 	/*
 	 * ⑫POSTの「stock」について⑩の変数の値を使用して値を取り出す。
 	 * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
@@ -65,6 +53,7 @@ foreach(/* ⑪の処理を書く */){
 	}
 	
 	//㉒ ⑩で宣言した変数をインクリメントで値を1増やす。
+	$books1++;
 }
 
 /*
