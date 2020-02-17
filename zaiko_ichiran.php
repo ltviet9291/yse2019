@@ -10,17 +10,20 @@
 出荷する商品が選択されていません：商品が一つも選択されていない状態で出荷ボタンを押す
 */
 
-session_start();
-
-if ($_SESSION["login"]==false){
-	$_SESSION["error2"] = 'ログインしてください';
-	header("Location: login.php");
+	session_start();
+	
+	if ($_SESSION["login"]!=true){
+		$_SESSION["error2"]="ログインしてください";
+		header ( "Location:login.php" );
 	}
-$con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
+	
+	$con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
 
 	mysqli_set_charset($con,"UTF8");
 	$sql = "select * from books";
 	$rst = mysqli_query($con,$sql) or die("select失敗".mysqli_error($con));
+
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -33,17 +36,18 @@ $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_y
 	<div id="header">
 		<h1>書籍一覧</h1>
 	</div>
-	<form action="zaiko_ichiran.php" method="post" id="myform" name="myform">
+	<form method="post" id="myform" name="myform">
 		<div id="pagebody">
+			<!-- エラーメッセージ表示 -->
+
 			<!-- エラーメッセージ表示 -->
 			<div id="error">
 				<?php
-				if(!empty($_SESSION["success"])){
-					echo $_SESSION["success"];
+				if(isset($_SESSION['success'])){
+					echo $_SESSION['success'];
 				}
 				?>
 			</div>
-			
 			<!-- 左メニュー -->
 			<div id="left">
 				<p id="ninsyou_ippan">
@@ -73,9 +77,10 @@ $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_y
 						</tr>
 					</thead>
 					<tbody>
-						<?php
+						<?php  
 							while($data = mysqli_fetch_array($rst)){
 								extract($data);
+
 									echo "<tr id='book'>";
 									echo "<td id='check'><input type='checkbox' name='books[]'value=".$id."></td>";
 									echo "<td id='id'>$id</td>";
@@ -85,8 +90,8 @@ $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_y
 									echo "<td id='price'>$price</td>";
 									echo "<td id='stock'>$stock</td>";
 
-							echo "</tr>";
-						}
+								echo "</tr>";
+							}
 						?>
 					</tbody>
 				</table>
