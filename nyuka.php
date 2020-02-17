@@ -10,30 +10,30 @@
 数値以外が入力されています：入力された値に数字以外の文字が含まれている
 */
 
-	if (session_status() == PHP_SESSION_NONE) {
-		session_start();
-	}
-	if ($_SESSION["login"]!=true){
-		$_SESSION["error2"]="ログインしてください";
-		header ( "Location:login.php" );
-		exit();
-	}
+if (session_status()==PHP_SESSION_NONE) {
+session_start ();
+}
 
-    $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
+
+if ($_SESSION ["login"] == false){
+	$_SESSION ["error2"] = 'ログインしてください';
+	header ( "Location:login.php" );
+}
+
+ $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
 	mysqli_set_charset($con,"UTF8");
 
-	
-	if(empty($_POST["books"])){
-		$_SESSION['success']="入荷する商品が選択されていません";
-		header("location:zaiko_ichiran.php");
-	}
-	
-	function getId($id,$con){
-		$sql = "select * from books where books.id=$id ";
+if(empty ($_POST ["books"])){
+	$_SESSION ["success"] = '入荷する商品が選択されていません';
+	header ( "Location:zaiko_ichiran.php" );
+}
+
+function getId($id,$con){
+	$sql = "select * from books where books.id=$id ";
 		$result = $con->query($sql);
 
 		return $result->fetch_assoc();
-	}
+}
 
 ?>
 <!DOCTYPE html>
@@ -53,7 +53,7 @@
 	<div id="menu">
 		<nav>
 			<ul>
-				<li><a href="zaiko_ichiran.php">書籍一覧</a></li>
+				<li><a href="zaiko_ichiran.php?page=1">書籍一覧</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -61,7 +61,13 @@
 	<form action="nyuka_kakunin.php" method="post">
 		<div id="pagebody">
 			<!-- エラーメッセージ -->
-			<div id="error"><?php echo @$_SESSION['error'];@$_SESSION['error']="";?></div>
+			<div id="error">
+			<?php
+			if(! empty($_SESSION ["error2"])){
+				echo $_SESSION ["error2"];
+			}
+			?>
+			</div>
 			<div id="center">
 				<table>
 					<thead>
@@ -76,20 +82,21 @@
 						</tr>
 					</thead>
 					<?php 
-    				foreach( $_POST["books"] as $bookNo){
-					$rock= getId($bookNo,$con);
-							?>
+foreach( $_POST["books"] as $bookNo){
+					$rock= getId($bookNo,$con);					?>
 					<input type="hidden" value="<?php echo	$rock["id"];?>" name="books[]">
 					<tr>
-						<td><?php echo	$rock["id"];?></td>
-						<td><?php echo	$rock["title"];?></td>
-						<td><?php echo	$rock["author"];?></td>
-						<td><?php echo	$rock["salesDate"];?></td>
-						<td><?php echo	$rock["price"];?></td>
-						<td><?php echo	$rock["stock"];?></td>
+						<td><?php echo	$rock['id'];?></td>
+						<td><?php echo	$rock['title'];?></td>
+						<td><?php echo	$rock['author'];?></td>
+						<td><?php echo	$rock['salesDate'];?></td>
+						<td><?php echo	$rock['price'];?></td>
+						<td><?php echo	$rock['stock'];?></td>
 						<td><input type='text' name='stock[]' size='5' maxlength='11' required></td>
 					</tr>
-					<?php }?>
+					<?php
+					 }
+					?>
 				</table>
 				<button type="submit" id="kakutei" formmethod="POST" name="decision" value="1">確定</button>
 			</div>

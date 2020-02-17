@@ -11,38 +11,35 @@
 	ユーザー名かパスワードが間違っています：①IDが間違っている　②IDが正しいがパスワードが異なる
 	ログインしてください：ログインしていない状態で他のページに遷移した場合(ログイン画面に遷移し上記を表示)
 */
-session_start ();
+session_start();
+
 $name = "";
 $pass = "";
 error_reporting ( E_ALL & ~ E_NOTICE );
 
-if (! empty ( $_POST ["decision"] )) {
-	if (! empty ( $_POST ["name"] && $_POST ["pass"] )) {
-		$name = $_POST ["name"];
-		$pass = $_POST ["pass"];
+if (! empty($_POST["decision"])) {
+	if (!empty($_POST["name"]) && !empty($_POST["pass"])) {
+		$name = $_POST["name"];
+		$pass = $_POST["pass"];
 	} else {
-		$msg="名前かパスワードが未入力です";
+		$msg = '名前かパスワードが未入力です。';
 	}
 }
-if (! empty ( $name )) {
-	if ($name=="yse"&&$pass=="2019"){
-		$_SESSION ["login"] = true;
-		$_SESSION ["account_name"] = $name;
-		header ( "Location:zaiko_ichiran.php" );
+
+if (!empty($name)) {
+	if ($name=="yse"&& $pass=="2019"){
+		$_SESSION["login"] = true;
+		$_SESSION["account_name"] = $name;
+		header ('Location:zaiko_ichiran.php');
 	}else{
-		$msg="ユーザー名かパスワードが間違っています";
+		$msg = 'ユーザー名かパスワードが間違っています。';
 	}
 }
 
-if (! empty ( $_SESSION ["error"] )) {
-	$error = $_SESSION ["error"];
-	$_SESSION ["error"] = null;
+if (!empty($_SESSION["error2"])) {
+$error=$_SESSION["error2"];
+$_SESSION["error2"]=null;
 }
-if (! empty ( $_SESSION ["error2"] )) {
-	$error = $_SESSION ["error2"];
-	$_SESSION ["error2"] = null;
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -54,9 +51,12 @@ if (! empty ( $_SESSION ["error2"] )) {
 <body id="login">
 	<div id="main">
 		<h1>ログイン</h1>
-		<?php 	echo "<div id='error'>", $error, "</div>";
-				echo "<div id='msg'>", $msg, "</div>";?>
-	<form action="login.php" method="post" id="log">
+		<?php
+		echo "<div id='error'>", $error, "</div>";
+		
+		echo "<div id='msg'>", $msg, "</div>";
+		?>
+		<form action="login.php" method="post" id="log">
 			<p>
 				<input type='text' name="name" size='5' placeholder="Username">
 			</p>

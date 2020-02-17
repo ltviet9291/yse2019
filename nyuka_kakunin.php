@@ -7,66 +7,61 @@
 【エラー一覧（エラー表示：発生条件）】
 なし
 */
-	
-	session_start();
-	
-	function getByid($id,$con){
-		$sql = "select * from books where books.id=$id ";
+
+session_start();
+function getByid($id,$con){
+	$sql = "select * from books where books.id=$id ";
 		$result = $con->query($sql);
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				return $row;
-			}
-		}
-	}
-	function updateByid($id,$con,$total){
-		$sql="UPDATE books set stock=$total WHERE id=$id ";
-		return $result = $con->query($sql);		
-	}
 
-	if ($_SESSION["login"]!=true){
-		$_SESSION["error2"]="ログインしてください";
-		header ( "Location:login.php" );
-		exit();
-	}
+		return $result->fetch_assoc();
 
+}
 
-	$con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
+function updateByid($id,$con,$total){
+	$sql = "UPDATE books SET stock = stock+$total WHERE books.id=$id ";
+}
+
+if ($_SESSION["login"] == false){
+	$_SESSION ["error2"] = 'ログインしてください';
+	header ( "Location:login.php" );
+}
+
+ $con = mysqli_connect("localhost" , "zaiko2019_yse" , "2019zaiko" , "zaiko2019_yse");
 	mysqli_set_charset($con,"UTF8");
+$books1=0;
+foreach($_POST["books"] as $g){
+	if (is_numeric($_POST["stock"] as $books1)) {
+		$_SESSION["error"] = "数値以外が入力されています";
+		include'nyuka.php';
+		exit;
+	}
+		$rock= getByid($g,$con);
+	//⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
+
+	//⑱ ⑰の値が100を超えているか判定する。超えていた場合はif文の中に入る。
+	if(/* ⑱の処理を行う */){
+		$_SESSION["error"] = "最大在庫数を超える数は入力できません";
+		include'nyuka.php';
+		exit;
+	}
 	
-	$sn=0;
-	foreach( $_POST["books"] as $bookNo){
+	$books1++;
+}
 
-		if (!is_numeric($_POST["stock"][$sn])) {
-			$_SESSION['error']="数値以外が入力されています";
-			include("nyuka.php");
-			exit();
-		}
-
-		$rock= getByid($bookNo,$con);
-		$total=$rock["stock"]+$_POST["stock"][$sn];
-		if($total >100){
-			$_SESSION['error']="最大在庫数を超える数は入力できません";
-			include("nyuka.php");
-			exit();
-		}
-		$sn++;
+if(@$_POST['add']){
+$books1=0;
+	$books=$_POST["books"];
+	foreach($goods as $g){
+		//㉗ ㉖で取得した書籍の情報の「stock」と、㉔の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
+		//㉘「updateByid」関数を呼び出す。その際に引数に㉕の処理で取得した値と⑧のDBの接続情報と㉗で計算した値を渡す。
+		//㉙ ㉔で宣言した変数をインクリメントで値を1増やす。
+		$rock= getByid($books,$con);
+		
 	}
 
-	if(@$_POST["add"]=="ok"){
-		$sn=0;
-		$result;
-		foreach( $_POST["books"] as $bookNo){
-			$rock= getByid($bookNo,$con);
-			$total=$rock["stock"]+$_POST["stock"][$sn];
-			$result= updateByid($bookNo,$con,$total);
-			$sn++;
-		}
-		if($result){
-			$_SESSION['success']="入荷が完了しました";
-			header("location:zaiko_ichiran.php");
-		}
-	}
+		$_SESSION["success"] = "入荷が完了しました";
+		header ('Location:zaiko_ichiran.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -91,19 +86,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php 
-    				$sn=0;
-    				foreach( $_POST["books"] as $bookNo){
-					$rock= getByid($bookNo,$con);
-							?>
+						<?php
+$books1=0;
+						foreach($books as $q){
+						$rock= getByid($books1,$con);
+						?>
 						<tr>
-							<td><?php echo	$rock["title"];?></td>
-							<td><?php echo	$rock["stock"];?></td>
-							<td><?php echo	$_POST["stock"][$sn];?></td>
+							<td><?php echo	$rock['title'];?></td>
+							<td><?php echo	$rock['stock'];?></td>
+							<td><?php echo	$books1=$_POST["stock"];?></td>
 						</tr>
-						<input type="hidden" name="books[]" value="<?php echo $bookNo;?>">
-						<input type="hidden" name="stock[]" value='<?php echo $_POST["stock"][$sn];?>'>
-						<?php $sn++;}?>
+						<input type="hidden" name="books[]" value="<?php echo $q; ?>">
+						<input type="hidden" name="stock[]" value='<?php echo $books1=$_POST["stock"];?>'>
+						<?php
+							$books1++;
+						}
+						?>
 					</tbody>
 				</table>
 				<div id="kakunin">
